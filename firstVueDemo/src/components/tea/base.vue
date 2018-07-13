@@ -1,10 +1,13 @@
 <template>
   <div>
+    <!--加载中样式-->
     <el-div v-loading.fullscreen.lock="load0"></el-div>
+    <!--培训中-->
     <el-span  v-loading.fullscreen.lock="loading"
               :element-loading-text="loadtext"
               :element-loading-spinner="loadingspinner"
               element-loading-background="rgba(0, 0, 0, 0.7)"></el-span>
+    <!--通过培训-->
     <el-span  v-loading.fullscreen.lock="loading2"
               :element-loading-text="loadtext2"
               :element-loading-spinner="loadingspinner2"
@@ -77,7 +80,7 @@ export default {
       this.loading = true
       setTimeout(() => {
         api.get(URL.DUDAO(id, type)).then(res => {
-          let resData = res.data
+          let resData = res
           if (resData.status == 1) {
             this.loading = false
             this.loading2 = true
@@ -97,8 +100,18 @@ export default {
     //  初始化函数
     info () {
       this.load0 = true
+      // let data = api.get(URL.TEAINDEX)
+      // let resData = data
+      // console.log(resData.status)
+      // if (resData.status == 1) {
+      //   this.load0 = false
+      //   this.data1 = resData.data
+      // } else {
+      //   this.load0 = false
+      //   this.$alert('加载失败', '错误提示！')
+      // }
       api.get(URL.TEAINDEX).then(res => {
-        let resData = res.data
+        let resData = res
         if (resData.status == 1) {
           this.load0 = false
           this.data1 = resData.data
@@ -116,15 +129,15 @@ export default {
 </script>
 
 <style scoped>
-  .m-ll {
-    margin-left: 50px
-  }
-  .tishi{
-    color: dodgerblue;
-}
-  .h{
-    margin-top: 8px;
-    margin-bottom: 0;
-  }
+  /*.m-ll {*/
+    /*margin-left: 50px*/
+  /*}*/
+  /*.tishi{*/
+    /*color: dodgerblue;*/
+/*}*/
+  /*.h{*/
+    /*margin-top: 8px;*/
+    /*margin-bottom: 0;*/
+  /*}*/
   /*.b{display: block!important;}*/
 </style>

@@ -9,13 +9,15 @@
         <div class="a-content-left" :class="{'hid':index==x}" v-for="(item,index) in nav" @click="hid(index)">{{item}}</div>
       </div>
       <div id="a-content-right">
-        <info :x="x" ref="sx" v-if="js==2"></info>
+        <info :x="x" ref="sx_tea" v-if="js==2"></info>
+        <stu :x="stu" ref="sx_stu" v-if="js==1"></stu>
       </div>
     </div>
   </div>
 </template>
 <script>
 import info from './tea/base'
+import stu from './stu/info'
 export default {
   name: 'index',
   data () {
@@ -24,16 +26,19 @@ export default {
       name: this.$route.query.name,
       type: '',
       x: 0,
+      stu: 0,
       js: Number(this.$route.query.type),
       tabPosition: 'left'
     }
   },
   components: {
-    info
+    info,
+    stu
   },
   methods: {
     hid (index) {
       this.x = index
+      this.stu = index
     },
     logout () {
       localStorage.removeItem('sessionid')
@@ -42,8 +47,13 @@ export default {
       this.$router.push('/')
     },
     sx () {
+      // 刷新功能-组件定义的别名 请求完成后重新调用组件
       this.$nextTick(() => {
-        this.$refs.sx.info()
+        if (this.js == 2) {
+          this.$refs.sx_tea.info()
+        } else {
+          this.$refs.sx_stu.info()
+        }
       })
     }
   },
@@ -136,5 +146,6 @@ export default {
     /*padding-left: 20px;*/
     overflow: auto;
     text-align: left;
+    margin-bottom: 50px;
   }
 </style>

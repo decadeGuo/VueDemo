@@ -32,6 +32,16 @@ export default {
   .blue{color: blue}
   .corsur{cursor: pointer}
   .rem{font-size: 20px}
+  .m-ll {
+    margin-left: 50px
+  }
+  .tishi{
+    color: dodgerblue;
+}
+  .h{
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
   /*.input {*/
     /*width: 200px;*/
   /*}*/

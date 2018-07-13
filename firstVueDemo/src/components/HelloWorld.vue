@@ -47,7 +47,8 @@ export default {
       error: '',
       info: {'username': '', 'password': '', 'radio': '2'},
       err: false,
-      fullscreenLoading: false
+      fullscreenLoading: false,
+      o: this.$route.query.o || null
     }
   },
   components: {
@@ -68,18 +69,25 @@ export default {
         // Axios.post('/login/?vue=true', this.info).then(res => {
         api.post(URL.LOGIN, this.info).then(res => {
           this.fullscreenLoading = false
-          console.log(res.data.data.sessionid)
+          console.log(res.data.sessionid)
           if (res.data.status == 0) {
-            this.error = res.data.data.error
+            this.error = res.data.error
             this.err = true
           } else {
-            localStorage.setItem('sessionid', res.data.data.sessionid)
+            localStorage.setItem('sessionid', res.data.sessionid)
             localStorage.setItem('type', this.info.radio)
-            localStorage.setItem('uid', res.data.data.uid)
-            this.$router.push('/index/?type=' + this.info.radio + '&name=' + res.data.data.name)
+            localStorage.setItem('uid', res.data.uid)
+            this.$router.push('/index/?type=' + this.info.radio + '&name=' + res.data.name)
           }
         })
       }
+    }
+  },
+  created () {
+    console.log(this.o)
+    if (this.o) {
+      this.error = this.o
+      this.err = true
     }
   }
 }
