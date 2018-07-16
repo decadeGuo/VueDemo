@@ -28,9 +28,9 @@ function dealUrl (url) {
     return
   }
   if (url.indexOf('?') === -1) {
-    url += '?vue=true&type=' + localStorage.getItem('type') + '&sessionid=' + localStorage.getItem('sessionid')
+    url += '?vue=true&radio=' + localStorage.getItem('type') + '&sessionid=' + localStorage.getItem('sessionid')
   } else {
-    url += '&vue=true&type=' + localStorage.getItem('type') + '&sessionid=' + localStorage.getItem('sessionid')
+    url += '&vue=true&radio=' + localStorage.getItem('type') + '&sessionid=' + localStorage.getItem('sessionid')
   }
   return url
 }

@@ -1,11 +1,24 @@
 <template>
   <div style="margin-top: 20px">
+    <!--加载中样式-->
+    <!--<el-div v-loading.fullscreen.lock="load0"></el-div>-->
+    <!--培训中-->
+    <!--<el-span  v-loading.fullscreen.lock="loading"-->
+              <!--:element-loading-text="loadtext"-->
+              <!--:element-loading-spinner="loadingspinner"-->
+              <!--element-loading-background="rgba(0, 0, 0, 0.7)"></el-span>-->
+    <!--&lt;!&ndash;通过培训&ndash;&gt;-->
+    <!--<el-span  v-loading.fullscreen.lock="loading2"-->
+              <!--:element-loading-text="loadtext2"-->
+              <!--:element-loading-spinner="loadingspinner2"-->
+              <!--element-loading-background="rgba(0, 0, 0, 0.7)"></el-span>-->
     <div style="margin-left: 30px;" v-if="x==0">
       <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============通用信息============</span></span></p>
-      <p><span class="rem">学生ID：<span class="tishi">11111</span></span></p>
-      <p><span class="rem">是否绑定微信：<span class="tishi">111</span></span></p>
-      <p><span class="rem">是否有答案权限：<span class="tishi">有</span></span>
-        <el-button type="primary" plain round size="mini" class="answer">取消答案</el-button>
+      <p><span class="rem">学生ID烦烦烦：<span class="tishi">{{uid}}</span></span></p>
+      <p><span class="rem">是否绑定微信：<span class="tishi">{{data1.is_weixin}}</span></span></p>
+      <p><span class="rem">是否有答案权限：<span class="tishi" v-if="data1.is_daan">有</span><span class="tishi" v-else>无</span></span>
+        <el-button type="primary" plain round size="mini" class="answer" v-if="data1.is_daan">取消答案</el-button>
+        <el-button type="primary" plain round size="mini" class="answer" v-else>添加答案</el-button>
       </p>
       <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============科目信息============</span></span></p>
       <p><el-dropdown trigger="click" @command="handleCommand" placement="bottom-start">
@@ -13,7 +26,7 @@
           {{cls_name}}<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="item in cls" :command="item">{{item}}</el-dropdown-item>
+          <el-dropdown-item v-for="(item,index) in cls" :command="item" :key="index">{{item}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown></p>
       <div style="margin-left: 10px">
@@ -56,18 +69,18 @@
                                             <span class="m-l">等级：</span><span class="tishi">5</span>
                                             <span class="m-l">称号：</span><span class="tishi">学神</span>
         </span><br>
-        <el-button v-for="item in buts" :type="item.type" plain size="small" >{{item.val}}exp</el-button>
+        <el-button v-for="(item,index) in buts" :type="item.type" plain size="small" :key="index">{{item.val}}exp</el-button>
         </p>
       </div>
     </div>
     <div style="margin-left: 30px;" v-if="x==3">
       <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============清楚数据============</span></span></p>
-      <el-dropdown trigger="click" @command="handleCommand" placement="bottom-start" style="margin-top: 10px">
+      <el-dropdown trigger="click" @command="handleCommand2" placement="bottom-start" style="margin-top: 10px">
         <el-button type="primary" plain class="rem">
-          {{cls_name}}<i class="el-icon-arrow-down el-icon--right"></i>
+          {{cls_name2}}<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="item in cls" :command="item">{{item}}</el-dropdown-item>
+          <el-dropdown-item v-for="(item,index) in cls" :command="item" :key="index">{{item}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -78,14 +91,25 @@
 </template>
 
 <script>
+import {api, URL} from '../../api/index'
 export default {
   name: 'info',
   data () {
     return {
+      load0: true,
+      loading: false,
+      loadtext: '正在努力通过培训。。。',
+      loadingspinner: 'el-icon-loading',
+      loading2: false,
+      loadtext2: '培训完成！',
+      loadingspinner2: 'el-icon-circle-check',
       cls_name: '点击查看班级哦',
+      cls_name2: '点击查看班级',
+      uid: localStorage.getItem('uid'),
       cls: ['测试班级(初中数学培优)', '恬恬的班级(高中数学)'],
       buts: [{val: '+10', type: 'primary'}, {val: '+20', type: 'primary'}, {val: '+50', type: 'primary'}, {val: '+100', type: 'primary'},
-        {val: '-10', type: 'warning'}, {val: '-20', type: 'warning'}, {val: '-50', type: 'warning'}, {val: '-100', type: 'warning'}]
+        {val: '-10', type: 'warning'}, {val: '-20', type: 'warning'}, {val: '-50', type: 'warning'}, {val: '-100', type: 'warning'}],
+      data1: {}
     }
   },
   props: {
@@ -95,7 +119,27 @@ export default {
     handleCommand (command) {
       this.$message('您选择了' + command)
       this.cls_name = command
+    },
+    handleCommand2 (command) {
+      this.$message('您选择了' + command)
+      this.cls_name2 = command
+    },
+    info () {
+      api.get(URL.TEAINDEX).then(res => {
+        let resData = res
+        console.log(resData.data)
+        if (resData.status == 1) {
+          this.load0 = false
+          this.data1 = resData.data
+        } else {
+          this.load0 = false
+          this.$alert('加载失败', '错误提示！')
+        }
+      })
     }
+  },
+  created () {
+    this.info()
   }
 }
 </script>
