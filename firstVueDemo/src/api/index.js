@@ -46,13 +46,13 @@ function dealUrl (url) {
 // })
 Axios.interceptors.response.use(function (response) {
   let resultData = response.data // 取出json数据
-  if (resultData.status === 1) {
-    return Promise.resolve(resultData)// 在此处直接将json内的data取出
-  } else { // resultData.response === 'fail'
+  if (resultData.status === 2) {
     localStorage.removeItem('sessionid')
     localStorage.removeItem('type')
     localStorage.removeItem('uid')
     console.log(resultData.message)
     Router.replace('/?o=' + resultData.message)
+  } else { // resultData.response === 'fail'
+    return Promise.resolve(resultData)// 在此处直接将json内的data取出
   }
 })
