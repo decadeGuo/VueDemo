@@ -62,37 +62,66 @@
       </p>
       <p class="m-l" style="color: blueviolet">提示：若之前绑定过，提交输入框为空即可</p>
     </div>
-    <div style="margin-left: 30px;" v-if="x==2">
-      <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============修改经验============</span></span></p>
-      <div>
-        <span class="rem">项目：<span class="tishi">初中数学培优</span></span>
-        <p class="m-ll" style="margin-top: 5px"><span class="rem">当前经验值：<span class="tishi">1123</span>
-                                            <span class="m-l">等级：</span><span class="tishi">5</span>
-                                            <span class="m-l">称号：</span><span class="tishi">学神</span>
-        </span><br>
-        <el-button v-for="(item,index) in buts" :type="item.type" plain size="small" :key="index">{{item.val}}exp</el-button>
-        </p>
-      </div>
+    <div style="margin-left: 30px;overflow: auto" v-if="x==2">
+      <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============免费课时============</span></span></p>
+              <template>
+          <el-table
+            :data="data1.free"
+            border
+            stripe
+            header-align="center"
+            align="center"
+            height="480"
+            style="width: 561px;margin-top: 20px;margin-left: 40px;text-align: center">
+            <el-table-column
+              prop="p"
+              label="项目名称"
+              header-align="center"
+            width="200">
+            </el-table-column>
+            <el-table-column
+              prop="un"
+              label="未绑微信"
+              header-align="center"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="al"
+              label="已绑微信"
+              header-align="center"
+            width="180">
+            </el-table-column>
+          </el-table>
+        </template>
+      <!--<div v-for="(item,index) in data1.free" :key="index">-->
+        <!--<span class="rem">项目：<span style="color: mediumslateblue">{{item.p}}</span></span>-->
+        <!--<p class="m-ll" style="margin-top: 5px" ><span class="rem">未绑定微信：<span class="tishi">{{item.un}}</span>-->
+          <!--<span class="m-ll">绑定微信：</span><span class="tishi">{{item.al}}</span></span><br>-->
+        <!--&lt;!&ndash;<el-button v-for="(item,index) in buts" :type="item.type" plain size="small" :key="index">{{item.val}}exp</el-button>&ndash;&gt;-->
+        <!--</p>-->
+      <!--</div>-->
     </div>
     <div style="margin-left: 30px;" v-if="x==3">
-      <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============清楚数据============</span></span></p>
+      <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============清楚数据(暂不可用)============</span></span></p>
       <el-dropdown trigger="click" @command="handleCommand2" placement="bottom-start" style="margin-top: 10px">
-        <el-button type="primary" plain class="rem">
+        <el-button type="primary" plain class="rem" disabled>
           {{cls_name2}}<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in cls" :command="item" :key="index">{{item}}</el-dropdown-item>
+          <el-dropdown-item v-for="(item,index) in data1.pro_info_1" :command="item.cls.name" :key="index">{{item.cls.name}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div style="margin-left: 30px;" v-if="x==4">
-      <p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============更多功能敬请期待！============</span></span></p>
+    <div style="margin-left: 30px; overflow: auto" v-if="x==4">
+      <!--<p><span class="el-icon-info weight">&nbsp;&nbsp;&nbsp;<span>============日志记录============</span></span></p>-->
+      <logs></logs>
     </div>
   </div>
 </template>
 
 <script>
 import {api, URL} from '../../api/index'
+import logs from '../log'
 export default {
   name: 'info',
   data () {
@@ -127,12 +156,13 @@ export default {
       this.cls_name = this.base_son_info.cls.name
       this.base_info = true
     },
-    handleCommand2 (command) {
+    handleCommand2 (index) {
       this.$message({type: 'success', message: '您选择了' + this.base_son_info.cls.name, center: true})
-      this.cls_name2 = command
+      this.cls_name2 = index.cls.name
     },
     //  刷新页面
     info () {
+      this.load0 = true
       api.get(URL.TEAINDEX).then(res => {
         let resData = res
         if (resData.status == 1) {
@@ -174,6 +204,9 @@ export default {
   },
   created () {
     this.info()
+  },
+  components: {
+    logs
   }
 }
 </script>

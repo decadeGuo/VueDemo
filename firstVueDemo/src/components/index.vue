@@ -1,12 +1,28 @@
 <template>
   <div class="content">
     <div class="head"><span>{{yindao}}<span class="warm">{{name}}</span>{{type}}</span>
+      <p class="out" v-if="js==2">
+        <el-button type="primary" plain round disabled="">切换为学生</el-button>
+      </p>
+      <p class="out" v-else>
+        <el-button type="primary" plain round disabled="">切换为老师</el-button>
+      </p>
+      <el-dropdown class="out" trigger="click" @command="handleCommand" placement="bottom-start">
+        <el-tooltip content="这里显示的为常用账号" placement="top">
+        <el-button type="primary" plain round v-loading.fullscreen.lock="fullscreenLoading">
+          切换账号<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button></el-tooltip>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item,index) in data" :key="index" :command="index">{{item.name}}({{item.p}})</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <p class="out"><span class="blue corsur el-icon-refresh" @click="sx">刷新</span>
-        <span class="blue m-l corsur el-icon-d-arrow-left" @click="logout" >退出登录</span></p>
+        <span class="blue m-l corsur el-icon-d-arrow-left" @click="logout">退出登录</span></p>
     </div>
     <div id="c-content">
       <div id="a-content-left">
-        <div class="a-content-left" :class="{'hid':index==x}" v-for="(item,index) in nav" @click="hid(index)">{{item}}</div>
+        <div class="a-content-left" :class="{'hid':index==x}" v-for="(item,index) in nav" :key="index" @click="hid(index)">{{item}}
+        </div>
       </div>
       <div id="a-content-right">
         <info :x="x" ref="sx_tea" v-if="js==2"></info>
@@ -18,17 +34,20 @@
 <script>
 import info from './tea/base'
 import stu from './stu/info'
+import {api, URL} from '../api/index'
 export default {
   name: 'index',
   data () {
     return {
+      fullscreenLoading: false,
       yindao: '',
       name: this.$route.query.name,
       type: '',
       x: 0,
       stu: 0,
       js: Number(this.$route.query.type),
-      tabPosition: 'left'
+      tabPosition: 'left',
+      data: {}
     }
   },
   components: {
@@ -55,6 +74,24 @@ export default {
           this.$refs.sx_stu.info()
         }
       })
+    },
+    handleCommand (index) {
+      var base = this.data[index]
+      this.$message({type: 'success', message: '您选择了' + base.name + '(' + base.p + ')', center: true})
+      this.fullscreenLoading = true
+      this.$router.push('/')
+      api.post('/login/?quick=' + base.id).then(res => {
+        this.fullscreenLoading = false
+        if (res.status == 0) {
+          this.error = res.data.error
+          this.err = true
+        } else {
+          localStorage.setItem('sessionid', res.data.sessionid)
+          localStorage.setItem('type', res.data.type)
+          localStorage.setItem('uid', res.data.uid)
+          this.$router.push('/index/?type=' + res.data.type + '&name=' + res.data.name)
+        }
+      })
     }
   },
   computed: {
@@ -62,16 +99,18 @@ export default {
       if (this.js == 1) {
         this.yindao = '亲爱的'
         this.type = '同学！'
-        return ['基本信息', '绑定微信', '修改经验', '清除数据', '更多功能']
+        return ['基本信息', '绑定微信', '免费课时', '清除数据', '更多功能']
       } else {
         this.yindao = '尊敬的'
         this.type = '老师！'
-        return ['基本信息', '获取督导资格', '更多功能']
+        return ['基本信息', '获取督导资格', '更多功能', '小游戏']
       }
     }
   },
   created () {
-
+    api.get('/get/quick/').then(res => {
+      this.data = res.data
+    })
   }
 }
 </script>
@@ -99,7 +138,7 @@ export default {
   .out {
     display: inline-block;
     margin: 0;
-    margin-left: 60%
+    margin-left: 10%
   }
 
   #c-content {
@@ -110,11 +149,13 @@ export default {
     position: relative;
     box-shadow: #F5F7FA 2px 2px;
   }
+
   .hid {
     background-color: white;
     color: #409EFF !important;
     border-right: none;
   }
+
   .a-content-left {
     font-size: 20px;
     height: 60px;
@@ -148,4 +189,5 @@ export default {
     text-align: left;
     margin-bottom: 50px;
   }
+
 </style>

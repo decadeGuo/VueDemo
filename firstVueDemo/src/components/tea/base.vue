@@ -45,7 +45,12 @@
       <p v-else class="rem m-ll tishi">没有已经通过培训的科目</p>
     </div>
     <div style="margin-left: 30px;" v-if="x==2">
-      <p class="rem m-l blue">更多功能敬请期待。。。</p>
+      <!--<p class="rem m-l blue">更多功能敬请期待。。。</p>-->
+      <logs></logs>
+    </div>
+    <div style="margin-left: 30px;" v-if="x==3">
+      <!--<p class="rem m-l blue">更多功能敬请期待。。。</p>-->
+      <games></games>
     </div>
   </div>
 
@@ -53,6 +58,8 @@
 
 <script>
 import {api, URL} from '../../api/index'
+import logs from '../log'
+import games from '../game'
 export default {
   data () {
     return {
@@ -86,12 +93,16 @@ export default {
             this.loading2 = true
             setTimeout(() => {
               this.loading2 = false
+              this.loadtext = '正在努力通过培训。。。'
+              this.loadtext2 = '培训完成！'
               this.info()
             }, 1500)
           } else {
             this.loadtext = resData.message
             setTimeout(() => {
               this.loading = false
+              this.loadtext = '正在努力通过培训。。。'
+              this.loadtext2 = '培训完成！'
             }, 1500)
           }
         })
@@ -100,16 +111,6 @@ export default {
     //  初始化函数
     info () {
       this.load0 = true
-      // let data = api.get(URL.TEAINDEX)
-      // let resData = data
-      // console.log(resData.status)
-      // if (resData.status == 1) {
-      //   this.load0 = false
-      //   this.data1 = resData.data
-      // } else {
-      //   this.load0 = false
-      //   this.$alert('加载失败', '错误提示！')
-      // }
       api.get(URL.TEAINDEX).then(res => {
         let resData = res
         if (resData.status == 1) {
@@ -124,6 +125,10 @@ export default {
   },
   created () {
     this.info()
+  },
+  components: {
+    logs,
+    games
   }
 }
 </script>
