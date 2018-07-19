@@ -1,11 +1,8 @@
 <template>
   <div class="content">
     <div class="head"><span>{{yindao}}<span class="warm">{{name}}</span>{{type}}</span>
-      <p class="out" v-if="js==2">
-        <el-button type="primary" plain round disabled="">切换为学生</el-button>
-      </p>
-      <p class="out" v-else>
-        <el-button type="primary" plain round disabled="">切换为老师</el-button>
+      <p class="out" >
+        <el-button type="primary" plain round @click="checkout">随机切换皮肤</el-button>
       </p>
       <el-dropdown class="out" trigger="click" @command="handleCommand" placement="bottom-start">
         <el-tooltip content="这里显示的为常用账号" placement="top">
@@ -29,6 +26,9 @@
         <stu :x="stu" ref="sx_stu" v-if="js==1"></stu>
       </div>
     </div>
+    <!--背景标签-->
+    <div class="back_0" :class="'back_' + back">
+  </div>
   </div>
 </template>
 <script>
@@ -39,8 +39,9 @@ export default {
   name: 'index',
   data () {
     return {
-      fullscreenLoading: false,
-      yindao: '',
+      back: localStorage.getItem('back') || 0, // 背景默认值
+      fullscreenLoading: false, // 加载中满屏状态
+      yindao: '', // 引导语  亲爱的同学
       name: this.$route.query.name,
       type: '',
       x: 0,
@@ -92,6 +93,15 @@ export default {
           this.$router.push('/index/?type=' + res.data.type + '&name=' + res.data.name)
         }
       })
+    },
+    checkout () {
+      var n = parseInt(Math.random(0, 1) * 5)
+      if (n === this.back) {
+        this.checkout()
+      } else {
+        this.back = n
+      }
+      localStorage.setItem('back', this.back)
     }
   },
   computed: {
@@ -103,7 +113,7 @@ export default {
       } else {
         this.yindao = '尊敬的'
         this.type = '老师！'
-        return ['基本信息', '获取督导资格', '更多功能', '小游戏']
+        return ['基本信息', '获取督导资格', '辅助功能', '娱乐-小游戏']
       }
     }
   },
@@ -114,7 +124,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
   .content {
     width: 1000px;
@@ -148,6 +157,7 @@ export default {
     height: 600px;
     position: relative;
     box-shadow: #F5F7FA 2px 2px;
+    background-color: white;
   }
 
   .hid {
@@ -163,6 +173,7 @@ export default {
     line-height: 60px;
     cursor: pointer;
     color: gray;
+    border-radius: 10px;
   }
 
   .a-content-left:hover {
@@ -175,6 +186,7 @@ export default {
     width: 20%;
     height: 600px;
     background-color: #F5F7FA;
+    border-radius: 10px;
   }
 
   #a-content-right {
@@ -189,5 +201,4 @@ export default {
     text-align: left;
     margin-bottom: 50px;
   }
-
 </style>

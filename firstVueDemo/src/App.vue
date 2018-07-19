@@ -14,6 +14,29 @@ export default {
 </script>
 
 <style>
+  /*<!--背景样式-->*/
+    .back_0{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+  }
+  .back_3{
+      background-color: deepskyblue;
+    }
+  .back_4{
+      background-color: mediumpurple;
+    }
+  .back_1{
+    background-image: url("assets/xue.jpg");
+    background-size: cover;
+  }
+  .back_2{
+    background-image: url("assets/xue_2.jpg");
+    background-size: cover;
+  }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

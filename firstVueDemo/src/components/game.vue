@@ -1,6 +1,6 @@
 <template>
 <div>
-  <p class="update-info">提示：由于技术原因，该模块在持续更新！</p>
+  <p class="update-info"></p>
   <div class="game">
     <p class="game-title">火眼金睛</p>
     <div class="game-left">
@@ -18,9 +18,10 @@
       <div>
       <button id="jx" @click="begain" v-if="already">{{go}}</button>
         <button id="jx" @click="begain" v-else disabled>{{go}}</button>
-        <div style="margin-top: 40px">
-          <p style="color: aqua;font-size: 1.2rem;height: 40px" v-if="ans">真笨！答案即将亮起</p>
-          <el-button type="primary" round plain style="margin-top: 20px" @click="showans">投降，查看答案</el-button>
+        <div style="margin-top: 20px">
+          <p>最高记录</p>
+          <p v-for="(item,index) in jilu" :key="index" v-if="jilu">{{item.lv}}: <span style="color: red">{{item.dw}}</span></p>
+          <el-button type="primary" round plain style="margin-top: 10px" @click="showans">投降，查看答案</el-button>
         </div>
     </div>
     </div>
@@ -35,25 +36,24 @@ export default {
   name: 'game',
   data () {
     return {
-      is_hit_showans: 0,
-      go: '开始挑战',
-      ans: false,
-      succe: false,
-      level: 0,
-      content: {},
-      right: -1,
-      al: '',
-      res: {},
-      already: true,
-      sa: -1,
-      time: 0,
-      time1: ''
+      is_hit_showans: 0, // 有没有点击查看答案 0 默认 -1 点击过 1 答对 用于判断下次继续挑战的难度
+      go: '开始挑战', // 主按钮文字
+      succe: false, // 答对后显示文字
+      level: 0, // 游戏级别
+      content: {}, // 游戏内容
+      right: -1, // 正确答案的索引
+      al: '0', // 字数
+      res: {}, // 答对后接口返回对象
+      already: true, // 主按钮是否可点击
+      sa: -1, // 显示正确答案的时候 改值置为正确答案的索引
+      time: 0, // 用时
+      time1: '', //  计时器
+      jilu: [] // 最高记录
     }
   },
   methods: {
     begain () {
       this.succe = false
-      this.ans = false
       this.sa = -1
       if (this.is_hit_showans >= 0) {
         this.level ++
@@ -65,6 +65,7 @@ export default {
         this.right = res.data.n
         this.al = res.data.al
         this.already = false
+        this.jilu = res.data.jilu
         this.go = '正在游戏...'
         this.time = 0
         this.time1 = setInterval(() => {
@@ -73,12 +74,16 @@ export default {
       })
     },
     sel (index) {
+      if (this.sa !== -1) {
+        return
+      }
       if (this.right === index) {
         this.$message({type: 'success', message: '答对了！', center: true})
-        api.get('/vue/game/res/?time=' + this.time).then(res => {
+        api.get('/vue/game/res/?time=' + this.time + '&l=' + this.level).then(res => {
           clearInterval(this.time1)
           this.succe = true
           this.res = res.data
+          this.jilu = res.data.jilu
           this.go = '继续挑战'
           this.already = true
           this.is_hit_showans = 1
@@ -91,7 +96,6 @@ export default {
       this.sa = this.right
       this.go = '开始游戏'
       this.already = true
-      this.ans = true
       this.is_hit_showans = -1
       clearInterval(this.time1)
     }
@@ -113,6 +117,7 @@ export default {
   }
 .update-info{
   font-size: 0.8rem;
+  height: 25px;
   color: gray;
 }
   .game-title{
@@ -173,5 +178,11 @@ export default {
   }
   .show{
     color: red;
+    animation:myfirst 5s;
   }
+  @keyframes myfirst
+{
+	from {color:green;}
+	to {color:red;}
+}
 </style>
