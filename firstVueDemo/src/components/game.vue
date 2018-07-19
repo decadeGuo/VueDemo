@@ -9,7 +9,7 @@
     <div class="game-right">
       <div style="height: 141px">
         <div v-if="succe">
-        <p style="margin-top: 50px;font-size: 1.1rem;color: orangered">恭喜你</p>
+        <p style="margin-top: 30px;font-size: 1.1rem;color: orangered">恭喜你</p>
         <p style="font-size: 1.5rem;color: orangered">找到了</p>
         <p style="font-size: 0.8rem;color: orangered">用时: <span style="font-size: 1.3rem;color: black">{{res.time}}</span>S</p>
         <p style="font-size: 0.8rem;color: blue">段位评分:<br> <span style="font-size: 1.5rem;color: red">{{res.score}}</span></p>

@@ -16,7 +16,7 @@ export default {
 <style>
   /*<!--背景样式-->*/
     .back_0{
-    position: absolute;
+    position: fixed;
     top:0;
     left:0;
     width: 100%;

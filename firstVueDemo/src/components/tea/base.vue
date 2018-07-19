@@ -52,6 +52,10 @@
       <!--<p class="rem m-l blue">更多功能敬请期待。。。</p>-->
       <games></games>
     </div>
+    <div style="margin-left: 30px;" v-if="x==4">
+      <!--<p class="rem m-l blue">游戏拼图敬请期待。。。</p>-->
+      <pt></pt>
+    </div>
   </div>
 
 </template>
@@ -60,6 +64,7 @@
 import {api, URL} from '../../api/index'
 import logs from '../log'
 import games from '../game'
+import pt from '../game-pt'
 export default {
   data () {
     return {
@@ -128,7 +133,8 @@ export default {
   },
   components: {
     logs,
-    games
+    games,
+    pt
   }
 }
 </script>

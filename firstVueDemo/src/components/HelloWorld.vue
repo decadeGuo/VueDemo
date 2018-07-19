@@ -39,7 +39,7 @@
       常用账号：
       <div class="input" style="text-align: left">
         <template><el-checkbox v-model="info.checked"></el-checkbox></template>
-        <span class="often" @click="often">常用账号说明</span>
+        <span class="often" @click="often">我同意常用账号协议</span>
       </div>
     </div>
     <div  class="demo-input-suffix"><error v-if="err" :error="error"></error></div>
@@ -61,7 +61,7 @@ export default {
     return {
       error: '',
       data: {},
-      info: {'username': '', 'password': '', 'radio': '2', checked: false},
+      info: {'username': '', 'password': '', 'radio': '2', checked: true},
       err: false,
       fullscreenLoading: false,
       o: this.$route.query.o || null
